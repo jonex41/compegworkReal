@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "759585622978",
+    "project_id": "votingapp-512da",
+    "storage_bucket": "votingapp-512da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759585622978:android:38e7116487b57a5338645b",
+        "android_client_info": {
+          "package_name": "com.example.compegwork"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759585622978-9qkq7ulcpund916brm42afk253u7ba2r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8hit-jS6WnSH-z_fVLd2Z2wj-kZw3FkY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759585622978-9qkq7ulcpund916brm42afk253u7ba2r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
