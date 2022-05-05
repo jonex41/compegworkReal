@@ -65,13 +65,17 @@ class _PickScreenState extends State<PickScreen> {
                       children: [
                         SizedBox(
                           height: 50.0,
-                          child: RaisedButton(
+                          child: ElevatedButton(
                             onPressed: () {
                               showBottomDialog(context);
                             },
-                            color: Colors.green,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        side: BorderSide(color: Colors.red)))),
                             child: const Text(
                               'Admin',
                               style: TextStyle(color: Colors.white),
@@ -83,7 +87,7 @@ class _PickScreenState extends State<PickScreen> {
                         ),
                         SizedBox(
                           height: 50.0,
-                          child: RaisedButton(
+                          child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -92,9 +96,13 @@ class _PickScreenState extends State<PickScreen> {
                                 ),
                               );
                             },
-                            color: Colors.green,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        side: BorderSide(color: Colors.red)))),
                             child: const Text(
                               'Student',
                               style: TextStyle(color: Colors.white),

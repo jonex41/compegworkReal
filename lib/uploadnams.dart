@@ -156,11 +156,13 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget thebutton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: RaisedButton(
-          color: Colors.pink,
+      child: ElevatedButton(
           child: const Text("Submit", style: TextStyle(color: Colors.white)),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      side: BorderSide(color: Colors.red)))),
           onPressed: () {
             UploadStuffs();
             /*Navigator.of(context).pushReplacement(
@@ -343,15 +345,13 @@ class _UploadScreenState extends State<UploadScreen> {
 
 Widget oneTextFieldText(
     String s, TextEditingController controller, String? conValue) {
-
-        if(conValue != ''){
-          controller.text = conValue!;
-        }
+  if (conValue != '') {
+    controller.text = conValue!;
+  }
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
     child: TextFormField(
       controller: controller,
-
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: s,

@@ -192,12 +192,16 @@ class _LoginScreenState extends State<LoginScreen> {
             width: 570,
             height: 70,
             padding: const EdgeInsets.only(top: 20),
-            child: RaisedButton(
-                color: Colors.pink,
+            child: ElevatedButton(
                 child:
                     const Text("Submit", style: TextStyle(color: Colors.white)),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
+                /*  : RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)), */
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ))),
                 onPressed: () {
                   /*Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (_) =>  MainScreen()),
@@ -216,8 +220,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         String name = doc["name"];
                         String level = doc["level"];
 
-                        if (nameController.text == name &&
-                            levelController.text == level) {
+                        if (nameController.text.trim() == name &&
+                            levelController.text.trim() == level) {
                           //Navigator.pop(context);
                           doThis(doc.id);
                           Loader.hide();

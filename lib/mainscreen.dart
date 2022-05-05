@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 
-
 class MainScreen extends ConsumerWidget {
   // SingingCharacter? _character = SingingCharacter.lafayette;
 
@@ -71,6 +70,7 @@ class MainScreen extends ConsumerWidget {
         FirebaseFirestore.instance.collection('Candidates');
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Vote'),
         actions: [
           /* IconButton(
@@ -85,7 +85,7 @@ class MainScreen extends ConsumerWidget {
               );
             },
           )*/
-          PopupMenuButton(
+          /* PopupMenuButton(
               // add icon, by default "3 dot" icon
               // icon: Icon(Icons.book)
               itemBuilder: (context) {
@@ -110,6 +110,7 @@ class MainScreen extends ConsumerWidget {
               );
             }
           }),
+         */
         ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
@@ -169,12 +170,16 @@ class MainScreen extends ConsumerWidget {
       title: Text(
         'Name',
         style: TextStyle(
-            fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w500),
+            fontSize: 14,
+            color: Colors.lightGreen,
+            fontWeight: FontWeight.w500),
       ),
       trailing: Text(
         'Level',
         style: TextStyle(
-            fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w500),
+            fontSize: 14,
+            color: Colors.lightGreen,
+            fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -236,13 +241,16 @@ class MainScreen extends ConsumerWidget {
   Widget thebutton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: RaisedButton(
-          color: Colors.pink,
+      child: ElevatedButton(
           child: const Text("Submit", style: TextStyle(color: Colors.white)),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      side: BorderSide(color: Colors.red)))),
           onPressed: () {
-            Loader.show(_context!,progressIndicator:const CircularProgressIndicator());
+            Loader.show(_context!,
+                progressIndicator: const CircularProgressIndicator());
             UploadStuffs();
             /*Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) =>  UploadStuffs()),
@@ -252,10 +260,9 @@ class MainScreen extends ConsumerWidget {
   }
 
   Future<void> UploadStuffs() async {
-
-     prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
     id = prefs!.getString('id');
-    if(prefs!.getBool('vote') == null){
+    if (prefs!.getBool('vote') == null) {
       FirebaseFirestore.instance
           .collection('Users')
           .doc(id)
@@ -264,8 +271,6 @@ class MainScreen extends ConsumerWidget {
         if (documentSnapshot.exists) {
           //print('Document data: ${documentSnapshot.data()}');
           if (documentSnapshot.get("vote") == 'no') {
-
-
             doTheCountAdd();
           } else {
             Loader.hide();
@@ -277,80 +282,119 @@ class MainScreen extends ConsumerWidget {
           print('Document does not exist on the database');
         }
       });
-    }else{
+    } else {
       Loader.hide();
-      ScaffoldMessenger.of(_context!).showSnackBar(const SnackBar(
-          content: Text('Please you cant vote two times')));
+      ScaffoldMessenger.of(_context!).showSnackBar(
+          const SnackBar(content: Text('Please you cant vote two times')));
     }
-
   }
 
   void doTheCountAdd() async {
     final pre = ref!.read(choicepresidentProvider);
-     if(pre != '') await doTransactions(choicepresident, Constant.PRESIDENT, choicepresidentProvider);
+    if (pre != '')
+      await doTransactions(
+          choicepresident, Constant.PRESIDENT, choicepresidentProvider);
     final prev = ref!.read(choicevPresidentProvider);
-     if(prev  != '') await doTransactions(choicevPresident, Constant.VPRESIDENT, choicevPresidentProvider);
+    if (prev != '')
+      await doTransactions(
+          choicevPresident, Constant.VPRESIDENT, choicevPresidentProvider);
     final prev2 = ref!.read(choiceVP2Provider);
-     if( prev2 != '') await doTransactions(choiceVP2, Constant.VPRESIDENTII, choiceVP2Provider);
+    if (prev2 != '')
+      await doTransactions(choiceVP2, Constant.VPRESIDENTII, choiceVP2Provider);
     final secgen = ref!.read(choiceSecretarygeneralProvider);
-     if( secgen != '') await doTransactions(choiceSecretarygeneral, Constant.SECRETARYGENRAL, choiceSecretarygeneralProvider);
+    if (secgen != '')
+      await doTransactions(choiceSecretarygeneral, Constant.SECRETARYGENRAL,
+          choiceSecretarygeneralProvider);
     final secgenasst = ref!.read(choiceAssSecregeneralProvider);
-     if( secgenasst != '') await doTransactions(choiceAssSecregeneral, Constant.ASSSECRETARYGENERAL, choiceAssSecregeneralProvider);
+    if (secgenasst != '')
+      await doTransactions(choiceAssSecregeneral, Constant.ASSSECRETARYGENERAL,
+          choiceAssSecregeneralProvider);
     final finsec = ref!.read(choiceFinancialSreProvider);
-     if( finsec != '') await doTransactions(choiceFinancialSre, Constant.FINANCIALSECRETARY, choiceFinancialSreProvider);
+    if (finsec != '')
+      await doTransactions(choiceFinancialSre, Constant.FINANCIALSECRETARY,
+          choiceFinancialSreProvider);
     final finsecass = ref!.read(choiceAssfinancialSreProvider);
-     if( finsecass != '') await doTransactions(choiceAssfinancialSre, Constant.ASSISTANTFINANCIALSECRETARY, choiceAssfinancialSreProvider);
+    if (finsecass != '')
+      await doTransactions(choiceAssfinancialSre,
+          Constant.ASSISTANTFINANCIALSECRETARY, choiceAssfinancialSreProvider);
     final treas = ref!.read(choiceAssTreasurerProvider);
-     if( treas != '') await doTransactions(choicetreasurer, Constant.TREASURER, choicetreasurerProvider);
+    if (treas != '')
+      await doTransactions(
+          choicetreasurer, Constant.TREASURER, choicetreasurerProvider);
     final treasass = ref!.read(choiceAssTreasurerProvider);
-     if( treasass != '') await doTransactions(choiceAssTreasurer, Constant.ASSISTANTTREASURER, choiceAssTreasurerProvider);
+    if (treasass != '')
+      await doTransactions(choiceAssTreasurer, Constant.ASSISTANTTREASURER,
+          choiceAssTreasurerProvider);
     final pro1 = ref!.read(choicePro1Provider);
-     if( pro1 != '') await doTransactions(choicePro1, Constant.PROI, choicePro1Provider);
+    if (pro1 != '')
+      await doTransactions(choicePro1, Constant.PROI, choicePro1Provider);
     final pro2 = ref!.read(choicePro2Provider);
-     if( pro2 != '') await doTransactions(choicePro2, Constant.PROII, choicePro2Provider);
+    if (pro2 != '')
+      await doTransactions(choicePro2, Constant.PROII, choicePro2Provider);
     final aud1 = ref!.read(choiceAuditor1Provider);
-     if( aud1 != '') await doTransactions(choiceAuditor1, Constant.AUDITORI, choiceAuditor1Provider);
+    if (aud1 != '')
+      await doTransactions(
+          choiceAuditor1, Constant.AUDITORI, choiceAuditor1Provider);
     final aud2 = ref!.read(choiceAuditor2Provider);
-     if( aud2 != '') await doTransactions(choiceAuditor2, Constant.AUDITORII, choiceAuditor2Provider);
+    if (aud2 != '')
+      await doTransactions(
+          choiceAuditor2, Constant.AUDITORII, choiceAuditor2Provider);
     final welfdirect = ref!.read(choiceWelfareDirector1Provider);
-     if( welfdirect != '') await doTransactions(choiceWelfareDirector1, Constant.WELFAREDIRECTORI, choiceWelfareDirector1Provider);
+    if (welfdirect != '')
+      await doTransactions(choiceWelfareDirector1, Constant.WELFAREDIRECTORI,
+          choiceWelfareDirector1Provider);
     final welfdirect2 = ref!.read(choiceWelfareDirector2Provider);
-     if(welfdirect2 != '') await doTransactions(choiceWelfareDirector2, Constant.WELFAREDIRECTORII, choiceWelfareDirector2Provider);
+    if (welfdirect2 != '')
+      await doTransactions(choiceWelfareDirector2, Constant.WELFAREDIRECTORII,
+          choiceWelfareDirector2Provider);
     final organisecre = ref!.read(choiceOrganisingSecreProvider);
-     if( organisecre != '') await doTransactions(choiceOrganisingSecre, Constant.ORGANISINGSECRETARY, choiceOrganisingSecreProvider);
+    if (organisecre != '')
+      await doTransactions(choiceOrganisingSecre, Constant.ORGANISINGSECRETARY,
+          choiceOrganisingSecreProvider);
     final organisecreass = ref!.read(choiceAssOrganisingSecreProvider);
-     if( organisecreass != '') await doTransactions(choiceAssOrganisingSecre, Constant.ASSORGANISINGSECRETARY, choiceAssOrganisingSecreProvider);
+    if (organisecreass != '')
+      await doTransactions(choiceAssOrganisingSecre,
+          Constant.ASSORGANISINGSECRETARY, choiceAssOrganisingSecreProvider);
     final legaladviser = ref!.read(choicelegalAdviserProvider);
-     if(legaladviser != '') {
-       final value = ref!.read(choicelegalAdviserProvider);
+    if (legaladviser != '') {
+      final value = ref!.read(choicelegalAdviserProvider);
       // await doTransactions(choicelegalAdviser, Constant.LEGALADVISER, choicelegalAdviserProvider);
-      await FirebaseFirestore.instance.collection('Votes').doc(Constant.LEGALADVISER).update({value: FieldValue.increment(1)}).catchError((err){
-
-         FirebaseFirestore.instance.collection('Votes').doc(Constant.LEGALADVISER).set({value: 1}, SetOptions(merge: true));
-       });
-       await FirebaseFirestore.instance
-           .collection('Users')
-           .doc(id).set({'vote':'yes'}, SetOptions(merge: true)).whenComplete((){
-             prefs!.setBool('vote', true);
-             Loader.hide();
-             Navigator.pop(_context!);
-       });
-
-     }
+      await FirebaseFirestore.instance
+          .collection('Votes')
+          .doc(Constant.LEGALADVISER)
+          .update({value: FieldValue.increment(1)}).catchError((err) {
+        FirebaseFirestore.instance
+            .collection('Votes')
+            .doc(Constant.LEGALADVISER)
+            .set({value: 1}, SetOptions(merge: true));
+      });
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(id)
+          .set({'vote': 'yes'}, SetOptions(merge: true)).whenComplete(() {
+        prefs!.setBool('vote', true);
+        Loader.hide();
+        Navigator.pop(_context!);
+      });
+    }
   }
 
-  doTransactions(String choiceUse, String post, StateProvider<String> provider) {
-
-         final value = ref!.read(provider);
-        FirebaseFirestore.instance.collection('Votes').doc(post).update({value: FieldValue.increment(1)}).catchError((err){
-
-          FirebaseFirestore.instance.collection('Votes').doc(post).set({value: 1}, SetOptions(merge: true));
-        });
-
-
+  doTransactions(
+      String choiceUse, String post, StateProvider<String> provider) {
+    final value = ref!.read(provider);
+    FirebaseFirestore.instance
+        .collection('Votes')
+        .doc(post)
+        .update({value: FieldValue.increment(1)}).catchError((err) {
+      FirebaseFirestore.instance
+          .collection('Votes')
+          .doc(post)
+          .set({value: 1}, SetOptions(merge: true));
+    });
   }
 
-  dotheOtherTransaction(String choiceUse, String post, StateProvider<String> provider) {
+  dotheOtherTransaction(
+      String choiceUse, String post, StateProvider<String> provider) {
     final value = ref?.watch(provider);
     FirebaseFirestore.instance.collection('Votes').doc(post).set(
       {value!: 1},
@@ -360,9 +404,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget dopresident(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      president = stuff.split("&");
+      if (stuff != null) {
+        president = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -374,7 +420,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...president.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -385,7 +431,6 @@ class MainScreen extends ConsumerWidget {
                     onChanged: (value) {
                       provider.read(choicepresidentProvider.notifier).state =
                           value!;
-
                     },
                   ),
                   trailing: Text(e.split(',').last.trim()),
@@ -400,9 +445,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doVPresident(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      vPresident = stuff.split("&");
+      if (stuff != null) {
+        vPresident = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -414,7 +461,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...vPresident.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -439,9 +486,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doVPresident2(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      VP2 = stuff.split("&");
+      if (stuff != null) {
+        VP2 = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -453,7 +502,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...VP2.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -477,9 +526,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doSecretaryGeneral(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      secretarygeneral = stuff.split("&");
+      if (stuff != null) {
+        secretarygeneral = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -491,7 +542,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...secretarygeneral.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -517,9 +568,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doAssSecretaryGeneral(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      assSecregeneral = stuff.split("&");
+      if (stuff != null) {
+        assSecregeneral = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -531,7 +584,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...assSecregeneral.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -557,9 +610,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doinancialSecretery(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      financialSre = stuff.split("&");
+      if (stuff != null) {
+        financialSre = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -571,7 +626,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...financialSre.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -596,9 +651,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doAssiFinacialSecretary(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      assfinancialSre = stuff.split("&");
+      if (stuff != null) {
+        assfinancialSre = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -610,7 +667,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...assfinancialSre.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -636,9 +693,12 @@ class MainScreen extends ConsumerWidget {
 
   Widget doTreaserer(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      treasurer = stuff.split("&");
+      if (stuff != null) {
+        treasurer = stuff.split("&");
+      }
+
       //Mr A,level Mr B,level
     }
 
@@ -650,7 +710,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...treasurer.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -675,9 +735,9 @@ class MainScreen extends ConsumerWidget {
 
   Widget doAssTreasurer(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      assTreasurer = stuff.split("&");
+      if (stuff != null) assTreasurer = stuff.split("&");
       //Mr A,level Mr B,level
     }
 
@@ -689,7 +749,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...assTreasurer.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -714,9 +774,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doPro1(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      pro1 = stuff.split("&");
+      if (stuff != null) {
+        pro1 = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -728,7 +790,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...pro1.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -752,9 +814,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doProii(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      pro2 = stuff.split("&");
+      if (stuff != null) {
+        pro2 = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -766,7 +830,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...pro2.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -790,9 +854,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doAuditori(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      auditor1 = stuff.split("&");
+      if (stuff != null) {
+        auditor1 = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -804,7 +870,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...auditor1.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -829,9 +895,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doAuditor2(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      auditor2 = stuff.split("&");
+      if (stuff != null) {
+        auditor2 = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -843,7 +911,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...auditor2.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -868,9 +936,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doWelfareDirector1(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      welfareDirector1 = stuff.split("&");
+      if (stuff != null) {
+        welfareDirector1 = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -882,7 +952,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...welfareDirector1.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -908,9 +978,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doWelfareDirector2(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      welfareDirector2 = stuff.split("&");
+      if (stuff != null) {
+        welfareDirector2 = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -922,7 +994,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...welfareDirector2.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -948,9 +1020,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doOrganizerSecretary(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      organisingSecre = stuff.split("&");
+      if (stuff != null) {
+        organisingSecre = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -962,7 +1036,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...organisingSecre.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -988,9 +1062,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doAssOrganisingSecretary(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      assOrganisingSecre = stuff.split("&");
+      if (stuff != null) {
+        assOrganisingSecre = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -1002,14 +1078,15 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...assOrganisingSecre.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
                   title: Text(e.split(',').first.trim()),
                   leading: Radio<String>(
                     value: e,
-                    groupValue: provider.watch(choiceAssOrganisingSecreProvider),
+                    groupValue:
+                        provider.watch(choiceAssOrganisingSecreProvider),
                     onChanged: (value) {
                       provider
                           .read(choiceAssOrganisingSecreProvider.notifier)
@@ -1028,9 +1105,11 @@ class MainScreen extends ConsumerWidget {
 
   Widget doLegalAdviser(String gggggg, bool value) {
     if (value) {
-      String stuff = data[gggggg];
+      String? stuff = data[gggggg];
       // Mr A,level & Mr B,Level'
-      legarlAdviser = stuff.split("&");
+      if (stuff != null) {
+        legarlAdviser = stuff.split("&");
+      }
       //Mr A,level Mr B,level
     }
 
@@ -1042,7 +1121,7 @@ class MainScreen extends ConsumerWidget {
             inbetween(),
             ...legarlAdviser.map((e) {
               return InkWell(
-                onTap: (){
+                onTap: () {
                   provider.read(choicepresidentProvider.notifier).state = e;
                 },
                 child: ListTile(
@@ -1064,5 +1143,4 @@ class MainScreen extends ConsumerWidget {
       },
     );
   }
-
 }

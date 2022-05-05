@@ -16,6 +16,7 @@ Future<void> main() async {
 
   runApp(ProviderScope(
     child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.green,
         ),

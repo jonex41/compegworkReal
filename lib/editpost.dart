@@ -6,12 +6,12 @@ class EditPost extends StatelessWidget {
   final TextEditingController vPresidentController = TextEditingController();
   final TextEditingController VP2Controller = TextEditingController();
   final TextEditingController secretarygeneralController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController assSecregeneralController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController financialSreController = TextEditingController();
   final TextEditingController assfinancialSreController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController treasurerController = TextEditingController();
   final TextEditingController assTreasurerController = TextEditingController();
   final TextEditingController pro1Controller = TextEditingController();
@@ -19,13 +19,13 @@ class EditPost extends StatelessWidget {
   final TextEditingController auditor1Controller = TextEditingController();
   final TextEditingController auditor2Controller = TextEditingController();
   final TextEditingController welfareDirector1Controller =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController welfareDirector2Controller =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController organisingSecreController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController assOrganisingSecreController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController legarlAdviserController = TextEditingController();
 
   @override
@@ -38,8 +38,11 @@ class EditPost extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.all(15.0),
-            child: Center(child: Text('Use comma to separate the name from the level and Dollar sign to'
-                ' separate one candidate from another EG. Mr A,level\$Mr B,Level'),),
+            child: Center(
+              child: Text(
+                  'Use comma to separate the name from the level and Dollar sign to'
+                  ' separate one candidate from another EG. Mr A,level\$Mr B,Level'),
+            ),
           ),
           oneTextField('Enter Presidents', presidentController),
           oneTextField('Enter Vice President', vPresidentController),
@@ -62,7 +65,9 @@ class EditPost extends StatelessWidget {
           oneTextField(
               'Enter Asst. Organising Secretary', assOrganisingSecreController),
           oneTextField('Enter Legal Adviser', legarlAdviserController),
-          const SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
           thebutton(context),
         ],
       ),
@@ -82,11 +87,13 @@ class EditPost extends StatelessWidget {
 }
 
 Widget thebutton(BuildContext context) {
-  return RaisedButton(
-      color: Colors.pink,
+  return ElevatedButton(
       child: const Text("Submit", style: TextStyle(color: Colors.white)),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30)),
+      style: ButtonStyle(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  side: BorderSide(color: Colors.red)))),
       onPressed: () {
         /*Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) =>  UploadStuffs()),
@@ -105,5 +112,3 @@ Widget thebutton(BuildContext context) {
                     }*/
       });
 }
-
-
