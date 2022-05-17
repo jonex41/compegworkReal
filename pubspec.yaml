@@ -41,18 +41,30 @@ dependencies:
   cloud_firestore: ^3.1.8
   flutter_overlay_loader: ^1.0.3
   flutter_riverpod: ^2.0.0-dev.4
+  
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  build_runner: ^2.1.7
+  flutter_gen_runner: ^4.1.5
+  icons_launcher: ^1.1.8
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+flutter_icons:
+  image_path: 'images/logo.png'
+  ios: true
+  android: true
+
+# flutter_icons:
+#   android: "launcher_icon"
+#   ios: true
+#   image_path: "images/logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

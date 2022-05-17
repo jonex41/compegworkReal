@@ -140,8 +140,8 @@ class MainScreen extends ConsumerWidget {
   /*Widget takeInAllList(String name, String choice, List<String> list, bool value) {
     if (value) {
       String stuff = data[name];
-      // Mr A,level & Mr B,Level'
-      list = stuff.split("&");
+      // Mr A,level \$ Mr B,Level'
+      list = stuff.split("\$");
       //Mr A,level Mr B,level
 
     }
@@ -246,8 +246,8 @@ class MainScreen extends ConsumerWidget {
           style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      side: BorderSide(color: Colors.red)))),
+            borderRadius: BorderRadius.circular(30.0),
+          ))),
           onPressed: () {
             Loader.show(_context!,
                 progressIndicator: const CircularProgressIndicator());
@@ -262,7 +262,7 @@ class MainScreen extends ConsumerWidget {
   Future<void> UploadStuffs() async {
     prefs = await SharedPreferences.getInstance();
     id = prefs!.getString('id');
-    if (prefs!.getBool('vote') == null) {
+    if (prefs!.getBool('vote' + prefs!.getString('ids')!) == null) {
       FirebaseFirestore.instance
           .collection('Users')
           .doc(id)
@@ -372,9 +372,9 @@ class MainScreen extends ConsumerWidget {
           .collection('Users')
           .doc(id)
           .set({'vote': 'yes'}, SetOptions(merge: true)).whenComplete(() {
-        prefs!.setBool('vote', true);
+        prefs!.setBool('vote' + prefs!.getString('ids')!, true);
         Loader.hide();
-        Navigator.pop(_context!);
+        //Navigator.pop(_context!);
       });
     }
   }
@@ -405,9 +405,9 @@ class MainScreen extends ConsumerWidget {
   Widget dopresident(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        president = stuff.split("&");
+        president = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -446,9 +446,9 @@ class MainScreen extends ConsumerWidget {
   Widget doVPresident(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        vPresident = stuff.split("&");
+        vPresident = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -487,9 +487,9 @@ class MainScreen extends ConsumerWidget {
   Widget doVPresident2(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        VP2 = stuff.split("&");
+        VP2 = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -527,9 +527,9 @@ class MainScreen extends ConsumerWidget {
   Widget doSecretaryGeneral(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        secretarygeneral = stuff.split("&");
+        secretarygeneral = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -569,9 +569,9 @@ class MainScreen extends ConsumerWidget {
   Widget doAssSecretaryGeneral(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        assSecregeneral = stuff.split("&");
+        assSecregeneral = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -611,9 +611,9 @@ class MainScreen extends ConsumerWidget {
   Widget doinancialSecretery(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        financialSre = stuff.split("&");
+        financialSre = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -652,9 +652,9 @@ class MainScreen extends ConsumerWidget {
   Widget doAssiFinacialSecretary(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        assfinancialSre = stuff.split("&");
+        assfinancialSre = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -694,9 +694,9 @@ class MainScreen extends ConsumerWidget {
   Widget doTreaserer(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        treasurer = stuff.split("&");
+        treasurer = stuff.split("\$");
       }
 
       //Mr A,level Mr B,level
@@ -736,8 +736,8 @@ class MainScreen extends ConsumerWidget {
   Widget doAssTreasurer(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      if (stuff != null) assTreasurer = stuff.split("&");
+      // Mr A,level \$ Mr B,Level'
+      if (stuff != null) assTreasurer = stuff.split("\$");
       //Mr A,level Mr B,level
     }
 
@@ -775,9 +775,9 @@ class MainScreen extends ConsumerWidget {
   Widget doPro1(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        pro1 = stuff.split("&");
+        pro1 = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -815,9 +815,9 @@ class MainScreen extends ConsumerWidget {
   Widget doProii(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        pro2 = stuff.split("&");
+        pro2 = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -855,9 +855,9 @@ class MainScreen extends ConsumerWidget {
   Widget doAuditori(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        auditor1 = stuff.split("&");
+        auditor1 = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -896,9 +896,9 @@ class MainScreen extends ConsumerWidget {
   Widget doAuditor2(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        auditor2 = stuff.split("&");
+        auditor2 = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -937,9 +937,9 @@ class MainScreen extends ConsumerWidget {
   Widget doWelfareDirector1(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        welfareDirector1 = stuff.split("&");
+        welfareDirector1 = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -979,9 +979,9 @@ class MainScreen extends ConsumerWidget {
   Widget doWelfareDirector2(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        welfareDirector2 = stuff.split("&");
+        welfareDirector2 = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -1021,9 +1021,9 @@ class MainScreen extends ConsumerWidget {
   Widget doOrganizerSecretary(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        organisingSecre = stuff.split("&");
+        organisingSecre = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -1063,9 +1063,9 @@ class MainScreen extends ConsumerWidget {
   Widget doAssOrganisingSecretary(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        assOrganisingSecre = stuff.split("&");
+        assOrganisingSecre = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }
@@ -1106,9 +1106,9 @@ class MainScreen extends ConsumerWidget {
   Widget doLegalAdviser(String gggggg, bool value) {
     if (value) {
       String? stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
+      // Mr A,level \$ Mr B,Level'
       if (stuff != null) {
-        legarlAdviser = stuff.split("&");
+        legarlAdviser = stuff.split("\$");
       }
       //Mr A,level Mr B,level
     }

@@ -59,10 +59,12 @@ class AdminScreen extends ConsumerWidget {
   String? id;
   WidgetRef? ref;
   List<Model> models = [];
+  BuildContext? context;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     this.ref = ref;
+    this.context = context;
     Color color = Theme.of(context).primaryColor;
     CollectionReference users =
         FirebaseFirestore.instance.collection('Candidates');
@@ -70,7 +72,8 @@ class AdminScreen extends ConsumerWidget {
         FirebaseFirestore.instance.collection('Votes').snapshots();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vote'),
+        centerTitle: true,
+        title: const Text('Results'),
         actions: [
           /* IconButton(
             icon: const Icon(
@@ -129,12 +132,12 @@ class AdminScreen extends ConsumerWidget {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
-                return const Center(child: Text('Something went wrong'));
+                return const Center(child: Text('There is no vote yet'));
               }
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              /*  if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: Text("Loading..."));
-              }
+              } */
               /*Map<String, dynamic> data = snapshot.data!.docs as Map<String, dynamic>;
             print(data);*/
               if (snapshot.hasData) {
@@ -151,8 +154,12 @@ class AdminScreen extends ConsumerWidget {
                       Model(doc.id, doc.data() as Map<String, dynamic>);
                   models.add(model);
                 }
+                if (docs.isEmpty) {
+                  return const Center(child: Text('There is no vote yet'));
+                }
+                return showWidget(true, context);
               }
-              return showWidget(false, context);
+              return const Center(child: Text('There is no vote yet'));
             },
           ),
         ],
@@ -183,22 +190,19 @@ class AdminScreen extends ConsumerWidget {
 
   Widget inbetween() {
     return const ListTile(
-      leading: Visibility(
-        visible: false,
-        child: Text(
-          'NAME',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+      leading: Text(
+        'Name',
+        style: TextStyle(fontWeight: FontWeight.w400),
       ),
       title: Text(
-        'Name',
+        'Count(s)',
         style: TextStyle(
-            fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w500),
+            fontSize: 14, color: Colors.green, fontWeight: FontWeight.w500),
       ),
       trailing: Text(
         'Level',
         style: TextStyle(
-            fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w500),
+            fontSize: 14, color: Colors.green, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -348,21 +352,28 @@ class AdminScreen extends ConsumerWidget {
   }
 
   Widget dopresident(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      president = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
+    //if (value) {
+    // String? stuff = data[gggggg];
+    // Mr A,level & Mr B,Level'
+    /*  if (stuff != null) {
+        president = stuff.split("&");
+      } */
+    //Mr A,level Mr B,level
+    // }
+
     int indext = models.indexWhere((f) => f.id == gggggg);
-    Model model1 = models.elementAt(indext);
-    return Column(
-      children: [
-        start(gggggg),
-        inbetween(),
-        ...listWidgets(model1.list),
-      ],
-    );
+    if (indext != -1) {
+      Model model1 = models.elementAt(indext);
+      return Column(
+        children: [
+          start(gggggg),
+          inbetween(),
+          ...listWidgets(model1.list),
+        ],
+      );
+    } else {
+      return Container();
+    }
   }
 /*
 
@@ -939,7 +950,10 @@ class AdminScreen extends ConsumerWidget {
     List<Widget> list1 = [];
     list.forEach((key, value) {
       list1.add(ListTile(
-        title: Text('    ${value}'),
+        title: Text(
+          '    ${value}',
+          style: TextStyle(color: Theme.of(context!).primaryColor),
+        ),
         leading: Text(key.split(',').first.trim()),
         trailing: Text(key.split(',').last.trim()),
       ));

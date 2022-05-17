@@ -206,42 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   /*Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (_) =>  MainScreen()),
                       );*/
-                  doTheCheckStuff();
-                  if (_formKey.currentState!.validate()) {
-                    // await widget.addMessage(_controller.text);
-                    Loader.show(context,
-                        progressIndicator: const CircularProgressIndicator());
-                    bool ggggg = false;
-                    FirebaseFirestore.instance
-                        .collection('Users')
-                        .get()
-                        .then((QuerySnapshot querySnapshot) {
-                      querySnapshot.docs.forEach((doc) {
-                        String name = doc["name"];
-                        String level = doc["level"];
-
-                        if (nameController.text.trim() == name &&
-                            levelController.text.trim() == level) {
-                          //Navigator.pop(context);
-                          doThis(doc.id);
-                          Loader.hide();
-                          ggggg = true;
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (_) => MainScreen()),
-                          );
-                          return;
-                        }
-                      });
-                      if (!ggggg) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text('Please enter a valid Credentials')));
-                      }
-                    }).whenComplete(() {
-                      Loader.hide();
-                    });
-                  }
+                  doMethod();
 
                   /* if (auth.fetchCredentials(
                           usernameController.text, passwordController.text)) {
@@ -315,6 +280,46 @@ class _LoginScreenState extends State<LoginScreen> {
         return alert;
       },
     );
+  }
+
+  void doMethod() async {
+    final prefs = await SharedPreferences.getInstance();
+    doTheCheckStuff();
+    if (_formKey.currentState!.validate()) {
+      // await widget.addMessage(_controller.text);
+      Loader.show(context,
+          progressIndicator: const CircularProgressIndicator());
+      bool ggggg = false;
+      FirebaseFirestore.instance
+          .collection('Users')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          String name = doc["name"];
+          String level = doc["level"];
+
+          if (nameController.text.trim() == name &&
+              levelController.text.trim() == level) {
+            //Navigator.pop(context);
+            doThis(doc.id);
+            Loader.hide();
+            ggggg = true;
+
+            prefs.setString('ids', doc.id);
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => MainScreen()),
+            );
+            return;
+          }
+        });
+        if (!ggggg) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Please enter a valid Credentials')));
+        }
+      }).whenComplete(() {
+        Loader.hide();
+      });
+    }
   }
 }
 

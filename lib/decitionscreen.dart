@@ -73,9 +73,8 @@ class _PickScreenState extends State<PickScreen> {
                                 shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        side: BorderSide(color: Colors.red)))),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ))),
                             child: const Text(
                               'Admin',
                               style: TextStyle(color: Colors.white),
@@ -100,9 +99,8 @@ class _PickScreenState extends State<PickScreen> {
                                 shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        side: BorderSide(color: Colors.red)))),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ))),
                             child: const Text(
                               'Student',
                               style: TextStyle(color: Colors.white),

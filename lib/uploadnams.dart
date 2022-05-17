@@ -303,7 +303,7 @@ class _UploadScreenState extends State<UploadScreen> {
           padding: EdgeInsets.all(15.0),
           child: Center(
             child: Text(
-                'Use comma to separate the name from the level and Dollar sign to'
+                "Use comma(,) to separate the name from the level and and(\$) sign to"
                 ' separate one candidate from another EG. Mr A,level & Mr B,Level'),
           ),
         ),
