@@ -13,28 +13,12 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Login Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        fontFamily: 'SanFrancisco',
-      ),
-      home: Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Color.fromARGB(255, 14, 82, 10),
-        body: const LoginScreen(),
-        bottomNavigationBar: BottomAppBar(
-            color: Colors.transparent,
-            elevation: 0,
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              child: const Text(
-                "COMPEG Voting System",
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            )),
-      ),
-    );
+        title: 'Login Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          fontFamily: 'SanFrancisco',
+        ),
+        home: const LoginScreen());
   }
 }
 
@@ -59,192 +43,207 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      reverse: true,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          // Login text Widget
-          Center(
-            child: Container(
-              height: 200,
-              width: 400,
-              alignment: Alignment.center,
-              child: const Text(
-                "Login",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                ),
-                // textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-
-          const SizedBox(
-            height: 60,
-            width: 10,
-          ),
-
-          // Wrong Password text
-          Visibility(
-            visible: _isVisible,
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(10),
-              child: const Text(
-                "Wrong credentials entered",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 10,
-                ),
-              ),
-            ),
-          ),
-
-          // Textfields for username and password fields
-          Container(
-            height: 210,
-            width: 530,
-            decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Colors.white),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(
-                    height: 20,
-                    width: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      onTap: () {
-                        setState(() {
-                          _isVisible = false;
-                        });
-                      },
-                      controller: nameController, // Controller for Username
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Reg. No",
-                          contentPadding: EdgeInsets.all(10)),
-                      onEditingComplete: () =>
-                          FocusScope.of(context).nextFocus(),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter Reg, No';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const Divider(
-                    thickness: 3,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      onTap: () {
-                        setState(() {
-                          _isVisible = false;
-                        });
-                      },
-
-                      controller: levelController, // Controller for Password
-                      decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          hintText: "Level",
-                          contentPadding: const EdgeInsets.all(10),
-                          // Adding the visibility icon to toggle visibility of the password field
-                          suffixIcon: IconButton(
-                            icon: Icon(_isObscure
-                                ? Icons.visibility_off
-                                : Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                _isObscure = !_isObscure;
-                              });
-                            },
-                          )),
-                      obscureText: _isObscure,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter right Level';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Submit Button
-          Container(
-            width: 570,
-            height: 70,
-            padding: const EdgeInsets.only(top: 20),
-            child: ElevatedButton(
-                child:
-                    const Text("Submit", style: TextStyle(color: Colors.white)),
-                /*  : RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)), */
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ))),
-                onPressed: () {
-                  /*Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) =>  MainScreen()),
-                      );*/
-                  doMethod();
-
-                  /* if (auth.fetchCredentials(
-                          usernameController.text, passwordController.text)) {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                              (Route<dynamic> route) => false,
-                        );
-                      } else {
-                        setState(() {
-                          _isVisible = true;
-                        });
-                      }*/
-                }),
-          ),
-
-          // Register
-          Container(
-              padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
-              child: Center(
-                  child: RichText(
-                text: TextSpan(
-                  text: "Dont have an account? ",
-                  style: const TextStyle(
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Color.fromARGB(255, 14, 82, 10),
+      body: SingleChildScrollView(
+        reverse: true,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            // Login text Widget
+            Center(
+              child: Container(
+                height: 200,
+                width: 400,
+                alignment: Alignment.center,
+                child: const Text(
+                  "Login",
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 15,
+                    fontSize: 34,
+                    fontWeight: FontWeight.bold,
                   ),
-                  children: [
-                    TextSpan(
-                        text: " Contact Admin",
-                        style: const TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.bold),
-                        recognizer: TapGestureRecognizer()..onTap = () => {}),
+                  // textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+
+            const SizedBox(
+              height: 60,
+              width: 10,
+            ),
+
+            // Wrong Password text
+            Visibility(
+              visible: _isVisible,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.all(10),
+                child: const Text(
+                  "Wrong credentials entered",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ),
+
+            // Textfields for username and password fields
+            Container(
+              height: 210,
+              width: 530,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.white),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 20,
+                      width: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        onTap: () {
+                          setState(() {
+                            _isVisible = false;
+                          });
+                        },
+                        controller: nameController, // Controller for Username
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Reg. No",
+                            contentPadding: EdgeInsets.all(10)),
+                        onEditingComplete: () =>
+                            FocusScope.of(context).nextFocus(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter Reg, No';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const Divider(
+                      thickness: 3,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        onTap: () {
+                          setState(() {
+                            _isVisible = false;
+                          });
+                        },
+
+                        controller: levelController, // Controller for Password
+                        decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            hintText: "Level",
+                            contentPadding: const EdgeInsets.all(10),
+                            // Adding the visibility icon to toggle visibility of the password field
+                            suffixIcon: IconButton(
+                              icon: Icon(_isObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  _isObscure = !_isObscure;
+                                });
+                              },
+                            )),
+                        obscureText: _isObscure,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter right Level';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
                   ],
                 ),
-              ))),
-        ],
+              ),
+            ),
+
+            // Submit Button
+            Container(
+              width: 570,
+              height: 70,
+              padding: const EdgeInsets.only(top: 20),
+              child: ElevatedButton(
+                  child: const Text("Submit",
+                      style: TextStyle(color: Colors.white)),
+                  /*  : RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)), */
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ))),
+                  onPressed: () {
+                    /*Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (_) =>  MainScreen()),
+                          );*/
+                    doMethod();
+
+                    /* if (auth.fetchCredentials(
+                              usernameController.text, passwordController.text)) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage()),
+                                  (Route<dynamic> route) => false,
+                            );
+                          } else {
+                            setState(() {
+                              _isVisible = true;
+                            });
+                          }*/
+                  }),
+            ),
+
+            // Register
+            Container(
+                padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
+                child: Center(
+                    child: RichText(
+                  text: TextSpan(
+                    text: "Dont have an account? ",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                    children: [
+                      TextSpan(
+                          text: " Contact Admin",
+                          style: const TextStyle(
+                              color: Colors.blue, fontWeight: FontWeight.bold),
+                          recognizer: TapGestureRecognizer()..onTap = () => {}),
+                    ],
+                  ),
+                ))),
+          ],
+        ),
       ),
+      bottomNavigationBar: BottomAppBar(
+          color: Colors.transparent,
+          elevation: 0,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: const Text(
+              "COMPEG Voting System",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          )),
     );
   }
 

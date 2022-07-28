@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:compegwork/constants.dart';
 import 'package:compegwork/editpost.dart';
+import 'package:compegwork/loginscreen.dart';
 import 'package:compegwork/providers.dart';
 import 'package:compegwork/uploadnams.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,6 +67,17 @@ class MainScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future<void> doThis() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      id = prefs.getString('id');
+    }
+
+    useEffect(() {
+      doThis();
+      // print('my id $id');
+      // FirebaseFirestore.instance.collection('Users').doc(id).get();
+    });
+
     this.ref = ref;
     _context = context;
     Color color = Theme.of(context).primaryColor;
@@ -80,73 +92,54 @@ class MainScreen extends HookConsumerWidget {
         title: const Text('Vote'),
         actions: [
           /* IconButton(
-            icon: const Icon(
-              Icons.edit,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              // do something
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) =>  UploadScreen()),
-              );
-            },
-          )*/
-          PopupMenuButton(
-              // add icon, by default "3 dot" icon
-              // icon: Icon(Icons.book)
-              itemBuilder: (context) {
-            return [
-              const PopupMenuItem<int>(
-                value: 0,
-                child: Text("Upload"),
-              ),
-              const PopupMenuItem<int>(
-                value: 1,
-                child: Text("Edit Upload"),
-              ),
-              const PopupMenuItem<int>(
-                value: 2,
-                child: Text("Delete Candidates"),
-              ),
-            ];
-          }, onSelected: (value) {
-            if (value == 0) {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => UploadScreen()),
-              );
-            } else if (value == 1) {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => EditPost()),
-              );
-            } else {
-              p.Loader.hide();
-              showDialog(
-                  context: _context!,
-                  builder: (ctx) => AlertDialog(
-                        title:const Text('Vote'),
-                        content:const Text(
-                            'Are you sure you want to delete all the contestants'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(ctx).pop();
-                              },
-                              child:const Text('Ok'))
-                        ],
-                      ));
-
-              /*  ScaffoldMessenger.of(_context!).showSnackBar(const SnackBar(
-                content: Text('Please you cant vote two times'))); */
-
-              p.Loader.hide();
-            }
-          }),
+                icon: const Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  // do something
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) =>  UploadScreen()),
+                  );
+                },
+              )*/
+          /*     PopupMenuButton(
+                  // add icon, by default "3 dot" icon
+                  // icon: Icon(Icons.book)
+                  itemBuilder: (context) {
+                return [
+                  const PopupMenuItem<int>(
+                    value: 0,
+                    child: Text("Upload"),
+                  ),
+                  const PopupMenuItem<int>(
+                    value: 1,
+                    child: Text("Edit Upload"),
+                  ),
+                  const PopupMenuItem<int>(
+                    value: 2,
+                    child: Text("Delete Candidates"),
+                  ),
+                ];
+              }, onSelected: (value) {
+                if (value == 0) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => UploadScreen()),
+                  );
+                } else if (value == 1) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => EditPost()),
+                  );
+                } else {
+                 
+                }
+              }), */
         ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: users.doc('list').get(),
         builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            (BuildContext _context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
             return const Center(child: Text("No Candidates yet"));
           }
@@ -158,13 +151,15 @@ class MainScreen extends HookConsumerWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             data = snapshot.data!.data() as Map<String, dynamic>;
             // return Text("Full Name: ${data['full_name']} ${data['last_name']}");
+            print('i am fiart here');
+            print('my id $id');
 
-            FutureBuilder<DocumentSnapshot>(
+            return FutureBuilder<DocumentSnapshot>(
               future: FirebaseFirestore.instance
                   .collection('Users')
                   .doc(id)
                   .get(), // async work
-              builder: (BuildContext context,
+              builder: (BuildContext _context,
                   AsyncSnapshot<DocumentSnapshot> snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -174,41 +169,19 @@ class MainScreen extends HookConsumerWidget {
                       return Text('Error: ${snapshot.error}');
                     } else {
                       // return Text('Result: ${snapshot.data}');
+                      print('i am here');
                       if (snapshot.data!['vote'] == 'yes') {
-                        showDialog(
-                            context: _context!,
-                            builder: (ctx) => AlertDialog(
-                                  title:const  Text('Vote'),
-                                  content: const Text(
-                                      'Please note that, you cant vote two times'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                        },
-                                        child:const Text('Ok'))
-                                  ],
-                                )).then((value) => null);
-
+                       
                         return Container(
-                            child:
-                                const Text('Please you can not vote two times')
-                                    .center());
+                            child: const Text(
+                          'Please you cannot \nvote two times',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold),
+                        ).center());
                       } else {
-                        showDialog(
-                            context: _context!,
-                            builder: (ctx) => AlertDialog(
-                                  title: const Text('Vote'),
-                                  content: const Text(
-                                      'Please note that, you can only vote once'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                        },
-                                        child:const Text('Ok'))
-                                  ],
-                                )).then((value) => null);
                         return ShowWidget(true, context);
                       }
                     }
@@ -294,6 +267,15 @@ class MainScreen extends HookConsumerWidget {
   Widget ShowWidget(bool value, BuildContext context) {
     return ListView(
       children: [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: const Text(
+            'Please note that you can only vote onces, this implies once submitted, you cant vote again',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
+          ),
+        ),
         dopresident(Constant.PRESIDENT, value),
         doVPresident(Constant.VPRESIDENT, value),
         doVPresident2(Constant.VPRESIDENTII, value),
@@ -359,21 +341,20 @@ class MainScreen extends HookConsumerWidget {
           if (documentSnapshot.get("vote") == 'no') {
             doTheCountAdd();
           } else {
-           
             showDialog(
                 context: _context!,
                 builder: (ctx) => AlertDialog(
                       title: const Text('Vote'),
-                      content:const Text('Please you cant vote two times'),
+                      content: const Text('Please you cant vote two times'),
                       actions: [
                         TextButton(
-                            onPressed: () async{
-                               p.Loader.hide();
-                             await FirebaseFirestore.instance
+                            onPressed: () async {
+                              p.Loader.hide();
+                              await FirebaseFirestore.instance
                                   .collection('Candidates')
                                   .doc('list')
                                   .delete();
-                                   p.Loader.hide();
+                              p.Loader.hide();
                               Navigator.of(ctx).pop();
                             },
                             child: Text('Ok'))
@@ -474,15 +455,34 @@ class MainScreen extends HookConsumerWidget {
             .doc(Constant.LEGALADVISER)
             .set({value: 1}, SetOptions(merge: true));
       });
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(id)
-          .set({'vote': 'yes'}, SetOptions(merge: true)).whenComplete(() {
-        prefs!.setBool('vote' + prefs!.getString('ids')!, true);
-        p.Loader.hide();
-        Navigator.pop(_context!);
-      });
     }
+
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(id)
+        .set({'vote': 'yes'}, SetOptions(merge: true)).whenComplete(() {
+      prefs!.setBool('vote' + prefs!.getString('ids')!, true);
+      p.Loader.hide();
+          showDialog(
+                            context: _context!,
+                            builder: (ctx) => AlertDialog(
+                                  title: const Text('Vote'),
+                                  content: const Text(
+                                      'Voting Successful'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                          Navigator.of(_context!).pushReplacement(
+        MaterialPageRoute(builder: (_) => LoginScreen()),
+      );
+                                        },
+                                        child: const Text('Ok'))
+                                  ],
+                                )).then((value) => null);
+ 
+      
+    });
   }
 
   doTransactions(

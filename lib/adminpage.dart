@@ -12,6 +12,7 @@ import 'package:compegwork/uploadnams.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 import 'model.dart';
+import 'package:flutter_overlay_loader/flutter_overlay_loader.dart' as p;
 
 class AdminScreen extends ConsumerWidget {
   // SingingCharacter? _character = SingingCharacter.lafayette;
@@ -106,6 +108,10 @@ class AdminScreen extends ConsumerWidget {
                 value: 1,
                 child: Text("Edit Upload"),
               ),
+              const PopupMenuItem<int>(
+                value: 2,
+                child: Text("Delete Candidates"),
+              ),
             ];
           }, onSelected: (value) {
             if (value == 0) {
@@ -116,6 +122,27 @@ class AdminScreen extends ConsumerWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => EditPost()),
               );
+            } else {
+              p.Loader.hide();
+              showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                        title: const Text('Vote'),
+                        content: const Text(
+                            'Are you sure you want to delete all the contestants'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(ctx).pop();
+                              },
+                              child: const Text('Ok'))
+                        ],
+                      ));
+
+              /*  ScaffoldMessenger.of(_context!).showSnackBar(const SnackBar(
+                content: Text('Please you cant vote two times'))); */
+
+              p.Loader.hide();
             }
           }),
         ],
@@ -175,30 +202,38 @@ class AdminScreen extends ConsumerWidget {
   }
 
   Widget start(String name) {
-    return ListTile(
-      leading: Text(
-        name,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          name,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+      ],
     );
   }
 
   Widget inbetween() {
-    return const ListTile(
-      leading: Text(
-        'Name',
-        style: TextStyle(fontWeight: FontWeight.w400),
-      ),
-      title: Text(
-        'Count(s)',
-        style: TextStyle(
-            fontSize: 14, color: Colors.green, fontWeight: FontWeight.w500),
-      ),
-      trailing: Text(
-        'Level',
-        style: TextStyle(
-            fontSize: 14, color: Colors.green, fontWeight: FontWeight.w500),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        const Text(
+          'Name',
+          style: TextStyle(fontWeight: FontWeight.w400),
+        ),
+        10.width,
+        const Text(
+          'Count(s)',
+          style: TextStyle(
+              fontSize: 14, color: Colors.green, fontWeight: FontWeight.w500),
+        ),
+        10.width,
+        const Text(
+          'Level',
+          style: TextStyle(
+              fontSize: 14, color: Colors.green, fontWeight: FontWeight.w500),
+        ),
+      ],
     );
   }
 
@@ -299,7 +334,9 @@ class AdminScreen extends ConsumerWidget {
       Model model1 = models.elementAt(indext);
       return Column(
         children: [
+          10.height,
           start(gggggg),
+          20.height,
           inbetween(),
           ...listWidgets(model1.list),
         ],
@@ -312,13 +349,24 @@ class AdminScreen extends ConsumerWidget {
   List<Widget> listWidgets(Map<String, dynamic> list) {
     List<Widget> list1 = [];
     list.forEach((key, value) {
-      list1.add(ListTile(
-        title: Text(
-          '    ${value}',
-          style: TextStyle(color: Theme.of(context!).primaryColor),
+      list1.add(Padding(
+        padding: const EdgeInsets.only(left: 30.0, right: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(child: Text(key.split(',').first.trim())),
+            Expanded(
+              child: Text(
+                '    ${value}',
+                style: TextStyle(color: Theme.of(context!).primaryColor),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 5.0),
+              child: Expanded(child: Text(key.split(',').last.trim())),
+            ),
+          ],
         ),
-        leading: Text(key.split(',').first.trim()),
-        trailing: Text(key.split(',').last.trim()),
       ));
     });
     return list1;
