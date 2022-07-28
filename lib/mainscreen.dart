@@ -8,11 +8,14 @@ import 'package:compegwork/providers.dart';
 import 'package:compegwork/uploadnams.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
+import 'package:flutter_overlay_loader/flutter_overlay_loader.dart' as p;
 
-class MainScreen extends ConsumerWidget {
+class MainScreen extends HookConsumerWidget {
   // SingingCharacter? _character = SingingCharacter.lafayette;
 
   List<String> president = [];
@@ -68,10 +71,13 @@ class MainScreen extends ConsumerWidget {
     Color color = Theme.of(context).primaryColor;
     CollectionReference users =
         FirebaseFirestore.instance.collection('Candidates');
+
+    // String value = getSharedPref();
+    //  if (prefs!.getBool('vote' + prefs!.getString('ids')!) == null) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Vote'),
+        title: const Text('Vote'),
         actions: [
           /* IconButton(
             icon: const Icon(
@@ -85,7 +91,7 @@ class MainScreen extends ConsumerWidget {
               );
             },
           )*/
-          /* PopupMenuButton(
+          PopupMenuButton(
               // add icon, by default "3 dot" icon
               // icon: Icon(Icons.book)
               itemBuilder: (context) {
@@ -98,6 +104,10 @@ class MainScreen extends ConsumerWidget {
                 value: 1,
                 child: Text("Edit Upload"),
               ),
+              const PopupMenuItem<int>(
+                value: 2,
+                child: Text("Delete Candidates"),
+              ),
             ];
           }, onSelected: (value) {
             if (value == 0) {
@@ -108,9 +118,29 @@ class MainScreen extends ConsumerWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => EditPost()),
               );
+            } else {
+              p.Loader.hide();
+              showDialog(
+                  context: _context!,
+                  builder: (ctx) => AlertDialog(
+                        title:const Text('Vote'),
+                        content:const Text(
+                            'Are you sure you want to delete all the contestants'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(ctx).pop();
+                              },
+                              child:const Text('Ok'))
+                        ],
+                      ));
+
+              /*  ScaffoldMessenger.of(_context!).showSnackBar(const SnackBar(
+                content: Text('Please you cant vote two times'))); */
+
+              p.Loader.hide();
             }
           }),
-         */
         ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
@@ -128,7 +158,63 @@ class MainScreen extends ConsumerWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             data = snapshot.data!.data() as Map<String, dynamic>;
             // return Text("Full Name: ${data['full_name']} ${data['last_name']}");
-            return ShowWidget(true, context);
+
+            FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('Users')
+                  .doc(id)
+                  .get(), // async work
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return const Text('Loading....');
+                  default:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      // return Text('Result: ${snapshot.data}');
+                      if (snapshot.data!['vote'] == 'yes') {
+                        showDialog(
+                            context: _context!,
+                            builder: (ctx) => AlertDialog(
+                                  title:const  Text('Vote'),
+                                  content: const Text(
+                                      'Please note that, you cant vote two times'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child:const Text('Ok'))
+                                  ],
+                                )).then((value) => null);
+
+                        return Container(
+                            child:
+                                const Text('Please you can not vote two times')
+                                    .center());
+                      } else {
+                        showDialog(
+                            context: _context!,
+                            builder: (ctx) => AlertDialog(
+                                  title: const Text('Vote'),
+                                  content: const Text(
+                                      'Please note that, you can only vote once'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child:const Text('Ok'))
+                                  ],
+                                )).then((value) => null);
+                        return ShowWidget(true, context);
+                      }
+                    }
+                }
+              },
+            );
           }
 
           return const Center(child: Text("loading...."));
@@ -249,7 +335,7 @@ class MainScreen extends ConsumerWidget {
             borderRadius: BorderRadius.circular(30.0),
           ))),
           onPressed: () {
-            Loader.show(_context!,
+            p.Loader.show(_context!,
                 progressIndicator: const CircularProgressIndicator());
             UploadStuffs();
             /*Navigator.of(context).pushReplacement(
@@ -262,7 +348,7 @@ class MainScreen extends ConsumerWidget {
   Future<void> UploadStuffs() async {
     prefs = await SharedPreferences.getInstance();
     id = prefs!.getString('id');
-    if (prefs!.getBool('vote' + prefs!.getString('ids')!) == null) {
+    if (prefs!.getBool('vote' + id!) == null) {
       FirebaseFirestore.instance
           .collection('Users')
           .doc(id)
@@ -273,17 +359,37 @@ class MainScreen extends ConsumerWidget {
           if (documentSnapshot.get("vote") == 'no') {
             doTheCountAdd();
           } else {
-            Loader.hide();
-            ScaffoldMessenger.of(_context!).showSnackBar(const SnackBar(
-                content: Text('Please you cant vote two times')));
+           
+            showDialog(
+                context: _context!,
+                builder: (ctx) => AlertDialog(
+                      title: const Text('Vote'),
+                      content:const Text('Please you cant vote two times'),
+                      actions: [
+                        TextButton(
+                            onPressed: () async{
+                               p.Loader.hide();
+                             await FirebaseFirestore.instance
+                                  .collection('Candidates')
+                                  .doc('list')
+                                  .delete();
+                                   p.Loader.hide();
+                              Navigator.of(ctx).pop();
+                            },
+                            child: Text('Ok'))
+                      ],
+                    ));
+
+            /*  ScaffoldMessenger.of(_context!).showSnackBar(const SnackBar(
+                content: Text('Please you cant vote two times'))); */
           }
         } else {
-          Loader.hide();
+          p.Loader.hide();
           print('Document does not exist on the database');
         }
       });
     } else {
-      Loader.hide();
+      p.Loader.hide();
       ScaffoldMessenger.of(_context!).showSnackBar(
           const SnackBar(content: Text('Please you cant vote two times')));
     }
@@ -373,8 +479,8 @@ class MainScreen extends ConsumerWidget {
           .doc(id)
           .set({'vote': 'yes'}, SetOptions(merge: true)).whenComplete(() {
         prefs!.setBool('vote' + prefs!.getString('ids')!, true);
-        Loader.hide();
-        //Navigator.pop(_context!);
+        p.Loader.hide();
+        Navigator.pop(_context!);
       });
     }
   }

@@ -1,16 +1,23 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:compegwork/constants.dart';
 import 'package:compegwork/editpost.dart';
+import 'package:compegwork/pdf_page.dart';
 import 'package:compegwork/providers.dart';
 import 'package:compegwork/uploadnams.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:share_plus/share_plus.dart';
 import 'model.dart';
 
 class AdminScreen extends ConsumerWidget {
@@ -75,18 +82,17 @@ class AdminScreen extends ConsumerWidget {
         centerTitle: true,
         title: const Text('Results'),
         actions: [
-          /* IconButton(
+          IconButton(
             icon: const Icon(
-              Icons.edit,
+              Icons.share_outlined,
               color: Colors.white,
             ),
-            onPressed: () {
+            onPressed: () async {
               // do something
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) =>  UploadScreen()),
-              );
+
+              await getPdf(models);
             },
-          )*/
+          ),
           PopupMenuButton(
               // add icon, by default "3 dot" icon
               // icon: Icon(Icons.book)
@@ -157,6 +163,7 @@ class AdminScreen extends ConsumerWidget {
                 if (docs.isEmpty) {
                   return const Center(child: Text('There is no vote yet'));
                 }
+
                 return showWidget(true, context);
               }
               return const Center(child: Text('There is no vote yet'));
@@ -167,18 +174,6 @@ class AdminScreen extends ConsumerWidget {
     );
   }
 
-  /*Widget takeInAllList(String name, String choice, List<String> list, bool value) {
-    if (value) {
-      String stuff = data[name];
-      // Mr A,level & Mr B,Level'
-      list = stuff.split("&");
-      //Mr A,level Mr B,level
-
-    }
-
-
-  }
-*/
   Widget start(String name) {
     return ListTile(
       leading: Text(
@@ -206,27 +201,6 @@ class AdminScreen extends ConsumerWidget {
       ),
     );
   }
-/*
-
-  Widget addOneRadioButton(int index, List<String> list, String choice) {
-    debugPrint(choice);
-
-    return ListTile(
-      title: Text(list[index].split(',').first.trim()),
-      leading: Radio<String>(
-        value: list.elementAt(index),
-        groupValue: checkWhichOne(choice),
-        onChanged: (value) {
-          setState(() {
-            assignValue(choice, value!);
-          });
-        },
-      ),
-      trailing: Text(list[index].split(',').last.trim()),
-    );
-  }
-
-*/
 
   Widget showWidget(bool value, BuildContext context) {
     return ListView(
@@ -244,7 +218,7 @@ class AdminScreen extends ConsumerWidget {
         dopresident(Constant.PROII, value),
         dopresident(Constant.AUDITORI, value),
         dopresident(Constant.AUDITORII, value),
-        dopresident(Constant.WELFAREDIRECTORII, value),
+        dopresident(Constant.WELFAREDIRECTORI, value),
         dopresident(Constant.WELFAREDIRECTORII, value),
         dopresident(Constant.ORGANISINGSECRETARY, value),
         dopresident(Constant.ASSORGANISINGSECRETARY, value),
@@ -309,38 +283,6 @@ class AdminScreen extends ConsumerWidget {
     dotheOtherTransaction(
         choicelegalAdviser, Constant.LEGALADVISER, choicelegalAdviserProvider);
   }
-  /*doTransactions(String choiceUse, String post){
-    // Create a reference to the document the transaction will use
-    DocumentReference documentReference = FirebaseFirestore.instance
-        .collection('Votes')
-        .doc(post);
-
-    return FirebaseFirestore.instance.runTransaction((transaction) async {
-      // Get the document
-      DocumentSnapshot snapshot = await transaction.get(documentReference);
-
-      if (!snapshot.exists) {
-        // throw Exception("User does not exist!");
-        dotheOtherTransaction(choiceUse, post);
-      }
-
-      // Update the follower count based on the current count
-      // Note: this could be done without a transaction
-      // by updating the population using FieldValue.increment()
-
-      int newFollowerCount = snapshot.get(choiceUse)+1;
-
-
-      // Perform an update on the document
-      transaction.update(documentReference, {choiceUse: newFollowerCount});
-
-      // Return the new count
-      return newFollowerCount;
-    })
-        .then((value) => print("Follower count updated to $value"))
-        .catchError((error) => print("Failed to update user followers: $error"));
-  }
-*/
 
   dotheOtherTransaction(
       String choiceUse, String post, StateProvider<String> provider) {
@@ -352,15 +294,6 @@ class AdminScreen extends ConsumerWidget {
   }
 
   Widget dopresident(String gggggg, bool value) {
-    //if (value) {
-    // String? stuff = data[gggggg];
-    // Mr A,level & Mr B,Level'
-    /*  if (stuff != null) {
-        president = stuff.split("&");
-      } */
-    //Mr A,level Mr B,level
-    // }
-
     int indext = models.indexWhere((f) => f.id == gggggg);
     if (indext != -1) {
       Model model1 = models.elementAt(indext);
@@ -375,576 +308,6 @@ class AdminScreen extends ConsumerWidget {
       return Container();
     }
   }
-/*
-
-  Widget doVPresident(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      vPresident = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...vPresident
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choicevPresidentProvider),
-                  onChanged: (value) {
-                    provider.read(choicevPresidentProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Row(
-                  children: [
-                    Text(e.split(',').last.trim()),
-                    Text(e.split(',').last.trim()),
-                  ],
-                ),
-              );
-            }).toList(),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget doVPresident2(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      VP2 = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...VP2
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceVP2Provider),
-                  onChanged: (value) {
-                    provider.read(choiceVP2Provider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doSecretaryGeneral(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      secretarygeneral = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...secretarygeneral
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceSecretarygeneralProvider),
-                  onChanged: (value) {
-                    provider.read(choiceSecretarygeneralProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doAssSecretaryGeneral(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      assSecregeneral = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...assSecregeneral
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceAssSecregeneralProvider),
-                  onChanged: (value) {
-                    provider.read(choiceAssSecregeneralProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doinancialSecretery(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      financialSre = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...financialSre
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceFinancialSreProvider),
-                  onChanged: (value) {
-                    provider.read(choiceFinancialSreProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget  doAssiFinacialSecretary(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      assfinancialSre = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...assfinancialSre
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceAssfinancialSreProvider),
-                  onChanged: (value) {
-                    provider.read(choiceAssfinancialSreProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doTreaserer(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      treasurer = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...treasurer
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choicetreasurerProvider),
-                  onChanged: (value) {
-                    provider.read(choicetreasurerProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doAssTreasurer(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      assTreasurer = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...assTreasurer
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceAssTreasurerProvider),
-                  onChanged: (value) {
-                    provider.read(choiceAssTreasurerProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doPro1(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      pro1 = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...pro1
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choicePro1Provider),
-                  onChanged: (value) {
-                    provider.read(choicePro1Provider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doProii(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      pro2 = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...pro2
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choicePro2Provider),
-                  onChanged: (value) {
-                    provider.read(choicePro2Provider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doAuditori(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      auditor1 = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...auditor1
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceAuditor1Provider),
-                  onChanged: (value) {
-                    provider.read(choiceAuditor1Provider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doAuditor2(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      auditor2 = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...auditor2
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceAuditor2Provider),
-                  onChanged: (value) {
-                    provider.read(choiceAuditor2Provider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doWelfareDirector1(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      welfareDirector1 = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...welfareDirector1
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceWelfareDirector1Provider),
-                  onChanged: (value) {
-                    provider.read(choiceWelfareDirector1Provider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doWelfareDirector2(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      welfareDirector2 = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...welfareDirector2
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceWelfareDirector2Provider),
-                  onChanged: (value) {
-                    provider.read(choiceWelfareDirector2Provider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doOrganizerSecretary(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      organisingSecre = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...organisingSecre
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceOrganisingSecreProvider),
-                  onChanged: (value) {
-                    provider.read(choiceOrganisingSecreProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doAssOrganisingSecretary(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      assOrganisingSecre = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...assOrganisingSecre
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choiceAssOrganisingSecreProvider),
-                  onChanged: (value) {
-                    provider.read(choiceAssOrganisingSecreProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-  Widget doLegalAdviser(String gggggg, bool value) {
-    if (value) {
-      String stuff = data[gggggg];
-      // Mr A,level & Mr B,Level'
-      legarlAdviser = stuff.split("&");
-      //Mr A,level Mr B,level
-    }
-
-    return Consumer(
-      builder: (context, provider, child) {
-        return Column(
-          children: [
-            start(gggggg),
-            inbetween(),
-            ...legarlAdviser
-                .map((e) {
-              return   ListTile(
-                title: Text(e.split(',').first.trim()),
-                leading: Radio<String>(
-                  value: e,
-                  groupValue:  provider.watch(choicelegalAdviserProvider),
-                  onChanged: (value) {
-                    provider.read(choicelegalAdviserProvider.notifier).state = value!;
-                  },
-                ),
-                trailing: Text(e.split(',').last.trim()),
-              );
-            })
-                .toList(),
-          ],
-        );
-      },
-    );}
-*/
 
   List<Widget> listWidgets(Map<String, dynamic> list) {
     List<Widget> list1 = [];
@@ -960,4 +323,7 @@ class AdminScreen extends ConsumerWidget {
     });
     return list1;
   }
+
+//the Pw doc type
+
 }
