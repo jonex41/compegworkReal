@@ -25,6 +25,24 @@ import 'package:flutter_overlay_loader/flutter_overlay_loader.dart' as p;
 class AdminScreen extends ConsumerWidget {
   // SingingCharacter? _character = SingingCharacter.lafayette;
 
+/*  dopresident(Constant.PRESIDENT, value),
+        dopresident(Constant.VPRESIDENT, value),
+        dopresident(Constant.VPRESIDENTII, value),
+        dopresident(Constant.SECRETARYGENRAL, value),
+        dopresident(Constant.ASSSECRETARYGENERAL, value),
+        dopresident(Constant.FINANCIALSECRETARY, value),
+        dopresident(Constant.ASSISTANTFINANCIALSECRETARY, value),
+        dopresident(Constant.TREASURER, value),
+        dopresident(Constant.ASSISTANTTREASURER, value),
+        dopresident(Constant.PROI, value),
+        dopresident(Constant.PROII, value),
+        dopresident(Constant.AUDITORI, value),
+        dopresident(Constant.AUDITORII, value),
+        dopresident(Constant.WELFAREDIRECTORI, value),
+        dopresident(Constant.WELFAREDIRECTORII, value),
+        dopresident(Constant.ORGANISINGSECRETARY, value),
+        dopresident(Constant.ASSORGANISINGSECRETARY, value),
+        dopresident(Constant.LEGALADVISER, value), */
   List<String> president = [];
   List<String> vPresident = [];
   List<String> VP2 = [];
@@ -77,7 +95,7 @@ class AdminScreen extends ConsumerWidget {
     Color color = Theme.of(context).primaryColor;
     CollectionReference users =
         FirebaseFirestore.instance.collection('Candidates');
-    final Stream<QuerySnapshot> _usersStream =
+     Stream<QuerySnapshot> _usersStream =
         FirebaseFirestore.instance.collection('Votes').snapshots();
     return Scaffold(
       appBar: AppBar(
@@ -133,7 +151,86 @@ class AdminScreen extends ConsumerWidget {
                         actions: [
                           TextButton(
                               onPressed: () {
+                                FirebaseFirestore.instance
+                                    .collection('Candidates')
+                                    .doc('list')
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.PRESIDENT)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.VPRESIDENT)
+                                    .delete();
+
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.VPRESIDENTII)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.SECRETARYGENRAL)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.ASSSECRETARYGENERAL)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.FINANCIALSECRETARY)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.ASSISTANTFINANCIALSECRETARY)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.TREASURER)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.ASSISTANTTREASURER)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.PROI)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.PROII)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.AUDITORI)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.AUDITORII)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.WELFAREDIRECTORI)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.WELFAREDIRECTORII)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.ORGANISINGSECRETARY)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.ASSORGANISINGSECRETARY)
+                                    .delete();
+                                FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .doc(Constant.LEGALADVISER)
+                                    .delete();
                                 Navigator.of(ctx).pop();
+                               _usersStream =
+        FirebaseFirestore.instance.collection('Votes').snapshots();
                               },
                               child: const Text('Ok'))
                         ],
