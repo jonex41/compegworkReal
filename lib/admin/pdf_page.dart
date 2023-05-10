@@ -5,8 +5,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
-import 'constants.dart';
-import 'model.dart';
+import '../constants.dart';
+import '../model.dart';
 import 'dart:collection';
 
 Future getPdf(List<Model> models) async {

@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:compegwork/constants.dart';
-import 'package:compegwork/editpost.dart';
-import 'package:compegwork/loginscreen.dart';
+import 'package:compegwork/admin/editpost.dart';
+import 'package:compegwork/login/loginscreen.dart';
 import 'package:compegwork/providers.dart';
-import 'package:compegwork/uploadnams.dart';
+import 'package:compegwork/admin/uploadnams.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

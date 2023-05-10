@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:compegwork/constants.dart';
-import 'package:compegwork/editpost.dart';
-import 'package:compegwork/pdf_page.dart';
+import 'package:compegwork/admin/editpost.dart';
+import 'package:compegwork/admin/pdf_page.dart';
 import 'package:compegwork/providers.dart';
-import 'package:compegwork/uploadnams.dart';
+import 'package:compegwork/admin/uploadnams.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'model.dart';
+import '../model.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart' as p;
 
 class AdminScreen extends ConsumerWidget {

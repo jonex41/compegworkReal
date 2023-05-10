@@ -1,5 +1,5 @@
-import 'package:compegwork/decitionscreen.dart';
-import 'package:compegwork/loginscreen.dart';
+import 'package:compegwork/admin/decitionscreen.dart';
+import 'package:compegwork/login/loginscreen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';

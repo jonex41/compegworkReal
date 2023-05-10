@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:nb_utils/nb_utils.dart' hide Loader;
 
-import 'mainscreen.dart';
+import '../student/mainscreen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -312,7 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ggggg = true;
 
             prefs.setString('ids', doc.id);
-            if (level == "password") {
+            if (level.trim() == "password") {
               showBottomDialog(context, doc.id);
             } else {
               Navigator.of(context).pushReplacement(
