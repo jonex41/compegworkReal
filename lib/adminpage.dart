@@ -1,24 +1,12 @@
-import 'dart:developer';
-import 'dart:io';
-import 'dart:math';
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:compegwork/constants.dart';
 import 'package:compegwork/editpost.dart';
 import 'package:compegwork/pdf_page.dart';
 import 'package:compegwork/providers.dart';
 import 'package:compegwork/uploadnams.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:share_plus/share_plus.dart';
 import 'model.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart' as p;
 
@@ -88,6 +76,8 @@ class AdminScreen extends ConsumerWidget {
   List<Model> models = [];
   BuildContext? context;
 
+  AdminScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     this.ref = ref;
@@ -95,7 +85,7 @@ class AdminScreen extends ConsumerWidget {
     Color color = Theme.of(context).primaryColor;
     CollectionReference users =
         FirebaseFirestore.instance.collection('Candidates');
-     Stream<QuerySnapshot> _usersStream =
+    Stream<QuerySnapshot> _usersStream =
         FirebaseFirestore.instance.collection('Votes').snapshots();
     return Scaffold(
       appBar: AppBar(
@@ -229,8 +219,9 @@ class AdminScreen extends ConsumerWidget {
                                     .doc(Constant.LEGALADVISER)
                                     .delete();
                                 Navigator.of(ctx).pop();
-                               _usersStream =
-        FirebaseFirestore.instance.collection('Votes').snapshots();
+                                _usersStream = FirebaseFirestore.instance
+                                    .collection('Votes')
+                                    .snapshots();
                               },
                               child: const Text('Ok'))
                         ],
@@ -454,7 +445,7 @@ class AdminScreen extends ConsumerWidget {
             Expanded(child: Text(key.split(',').first.trim())),
             Expanded(
               child: Text(
-                '    ${value}',
+                '    $value',
                 style: TextStyle(color: Theme.of(context!).primaryColor),
               ),
             ),
@@ -470,5 +461,4 @@ class AdminScreen extends ConsumerWidget {
   }
 
 //the Pw doc type
-
 }

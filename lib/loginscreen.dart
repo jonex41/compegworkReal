@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:nb_utils/nb_utils.dart' hide Loader;
 
-import 'decitionscreen.dart';
 import 'mainscreen.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -32,10 +29,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController levelController = TextEditingController();
+  final TextEditingController newPasswordcontroller = TextEditingController();
+  final TextEditingController regcontroller = TextEditingController();
+  final TextEditingController messagecontroller = TextEditingController();
   bool _isObscure = true;
   bool _isVisible = false;
-  bool _showProgress = false;
+  final bool _showProgress = false;
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+  final _dialogKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _buildImage(String assetName, [double width = 200]) {
     return Image.asset('assets/images/$assetName', width: width);
@@ -45,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Color.fromARGB(255, 14, 82, 10),
+      backgroundColor: const Color.fromARGB(255, 14, 82, 10),
       body: SingleChildScrollView(
         reverse: true,
         padding: const EdgeInsets.all(20),
@@ -147,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: levelController, // Controller for Password
                         decoration: InputDecoration(
                             border: const OutlineInputBorder(),
-                            hintText: "Level",
+                            hintText: "Password",
                             contentPadding: const EdgeInsets.all(10),
                             // Adding the visibility icon to toggle visibility of the password field
                             suffixIcon: IconButton(
@@ -214,22 +216,26 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
                 padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
                 child: Center(
-                    child: RichText(
-                  text: TextSpan(
-                    text: "Dont have an account? ",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
+                  child: Row(
                     children: [
-                      TextSpan(
-                          text: " Contact Admin",
-                          style: const TextStyle(
-                              color: Colors.blue, fontWeight: FontWeight.bold),
-                          recognizer: TapGestureRecognizer()..onTap = () => {}),
+                      const Text("Dont have an account? ",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                          )),
+                      GestureDetector(
+                        onTap: () {
+                          showContactAdmin(context);
+                        },
+                        child: Text("Contact Admin ",
+                            style: TextStyle(
+                              color: Colors.green[500],
+                              fontSize: 15,
+                            )),
+                      )
                     ],
                   ),
-                ))),
+                )),
           ],
         ),
       ),
@@ -293,24 +299,32 @@ class _LoginScreenState extends State<LoginScreen> {
           .collection('Users')
           .get()
           .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          String name = doc["name"];
-          String level = doc["level"];
+        for (var doc in querySnapshot.docs) {
+          String name = doc["regno"];
+          String level = doc["password"];
 
-          if (nameController.text.trim() == name &&
-              levelController.text.trim() == level) {
+          if (nameController.text.trim().toLowerCase() == name.toLowerCase() &&
+              levelController.text.trim().toLowerCase() ==
+                  level.toLowerCase()) {
             //Navigator.pop(context);
             doThis(doc.id);
             Loader.hide();
             ggggg = true;
 
             prefs.setString('ids', doc.id);
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => MainScreen()),
-            );
-            return;
+            if (level == "password") {
+              showBottomDialog(context, doc.id);
+            } else {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => MainScreen()),
+              );
+              setState(() {});
+              newPasswordcontroller.clear();
+            }
+
+            continue;
           }
-        });
+        }
         if (!ggggg) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('Please enter a valid Credentials')));
@@ -320,6 +334,166 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
+
+  Future showBottomDialog(BuildContext context, String id) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: const Text(
+              'Enter new Password',
+            ),
+            content: Form(
+              key: _dialogKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration:
+                        const InputDecoration(hintText: 'Enter new Password'),
+                    controller: newPasswordcontroller,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Enter password';
+                      }
+                      return null;
+                    },
+                    onChanged: (val) {
+                      if (val.length > 3) {
+                        /* setState(() {
+                          _myValue = true;
+                        });*/
+                      }
+                    },
+                  ),
+                  /*  Visibility(
+                      visible: _myValue,
+                      child: const Text(
+                        'Wrong password!!',
+                        style: TextStyle(color: Colors.red),
+                      )) */
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  if (_dialogKey.currentState!.validate()) {
+                    // await widget.addMessage(_controller.text);
+                    FirebaseFirestore.instance.collection('Users').doc(id).set(
+                        {'password': newPasswordcontroller.text},
+                        SetOptions(merge: true)).then((value) {
+                      Navigator.of(context).pop();
+
+                      /*  await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => AdminScreen())); */
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => MainScreen()),
+                      );
+                      setState(() {});
+                      newPasswordcontroller.clear();
+                    }).catchError(() {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Unable to update Password')));
+                    });
+                  }
+                },
+                child: const Text('Submit'),
+              )
+            ],
+          ));
+
+  Future showContactAdmin(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: const Text(
+              'Enter Message',
+            ),
+            content: Form(
+              key: _dialogKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(hintText: 'Reg No.'),
+                    controller: regcontroller,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Reg No.';
+                      }
+                      return null;
+                    },
+                    onChanged: (val) {
+                      if (val.length > 3) {
+                        /* setState(() {
+                          _myValue = true;
+                        });*/
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    decoration:
+                        const InputDecoration(hintText: 'Enter Message'),
+                    controller: messagecontroller,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Enter Message';
+                      }
+                      return null;
+                    },
+                    onChanged: (val) {
+                      if (val.length > 3) {
+                        /* setState(() {
+                          _myValue = true;
+                        });*/
+                      }
+                    },
+                  ),
+
+                  /*  Visibility(
+                      visible: _myValue,
+                      child: const Text(
+                        'Wrong password!!',
+                        style: TextStyle(color: Colors.red),
+                      )) */
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  if (_dialogKey.currentState!.validate()) {
+                    // await widget.addMessage(_controller.text);
+                    Loader.show(
+                      context,
+                    );
+                    await FirebaseFirestore.instance
+                        .collection('Complaint')
+                        .add(
+                      {
+                        'Regno': regcontroller.text,
+                        'Message': messagecontroller.text
+                      },
+                    );
+                    Loader.hide();
+                    /*  snackBar(context,
+                        content: const Text('Complaint sent Successfully')); */
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Complaint sent Successfully')));
+                    setState(() {});
+                    Navigator.of(context).pop();
+                    /* .then((value) {
+                     
+                      /*  await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => AdminScreen())); */
+                    }).catchError(() {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Unable to send Message')));
+                    }); */
+                  }
+                },
+                child: const Text('Submit'),
+              )
+            ],
+          ));
 }
 
 /*

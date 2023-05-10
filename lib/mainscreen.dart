@@ -65,6 +65,8 @@ class MainScreen extends HookConsumerWidget {
 
   SharedPreferences? prefs;
 
+  MainScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future<void> doThis() async {
@@ -74,6 +76,7 @@ class MainScreen extends HookConsumerWidget {
 
     useEffect(() {
       doThis();
+      return null;
       // print('my id $id');
       // FirebaseFirestore.instance.collection('Users').doc(id).get();
     });
@@ -90,7 +93,7 @@ class MainScreen extends HookConsumerWidget {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Vote'),
-        actions: [
+        actions: const [
           /* IconButton(
                 icon: const Icon(
                   Icons.edit,
@@ -171,7 +174,6 @@ class MainScreen extends HookConsumerWidget {
                       // return Text('Result: ${snapshot.data}');
                       print('i am here');
                       if (snapshot.data!['vote'] == 'yes') {
-                       
                         return Container(
                             child: const Text(
                           'Please you cannot \nvote two times',
@@ -267,9 +269,9 @@ class MainScreen extends HookConsumerWidget {
   Widget ShowWidget(bool value, BuildContext context) {
     return ListView(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: const Text(
+        const Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text(
             'Please note that you can only vote onces, this implies once submitted, you cant vote again',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -357,7 +359,7 @@ class MainScreen extends HookConsumerWidget {
                               p.Loader.hide();
                               Navigator.of(ctx).pop();
                             },
-                            child: Text('Ok'))
+                            child: const Text('Ok'))
                       ],
                     ));
 
@@ -378,70 +380,87 @@ class MainScreen extends HookConsumerWidget {
 
   void doTheCountAdd() async {
     final pre = ref!.read(choicepresidentProvider);
-    if (pre != '')
+    if (pre != '') {
       await doTransactions(
           choicepresident, Constant.PRESIDENT, choicepresidentProvider);
+    }
     final prev = ref!.read(choicevPresidentProvider);
-    if (prev != '')
+    if (prev != '') {
       await doTransactions(
           choicevPresident, Constant.VPRESIDENT, choicevPresidentProvider);
+    }
     final prev2 = ref!.read(choiceVP2Provider);
-    if (prev2 != '')
+    if (prev2 != '') {
       await doTransactions(choiceVP2, Constant.VPRESIDENTII, choiceVP2Provider);
+    }
     final secgen = ref!.read(choiceSecretarygeneralProvider);
-    if (secgen != '')
+    if (secgen != '') {
       await doTransactions(choiceSecretarygeneral, Constant.SECRETARYGENRAL,
           choiceSecretarygeneralProvider);
+    }
     final secgenasst = ref!.read(choiceAssSecregeneralProvider);
-    if (secgenasst != '')
+    if (secgenasst != '') {
       await doTransactions(choiceAssSecregeneral, Constant.ASSSECRETARYGENERAL,
           choiceAssSecregeneralProvider);
+    }
     final finsec = ref!.read(choiceFinancialSreProvider);
-    if (finsec != '')
+    if (finsec != '') {
       await doTransactions(choiceFinancialSre, Constant.FINANCIALSECRETARY,
           choiceFinancialSreProvider);
+    }
     final finsecass = ref!.read(choiceAssfinancialSreProvider);
-    if (finsecass != '')
+    if (finsecass != '') {
       await doTransactions(choiceAssfinancialSre,
           Constant.ASSISTANTFINANCIALSECRETARY, choiceAssfinancialSreProvider);
+    }
     final treas = ref!.read(choiceAssTreasurerProvider);
-    if (treas != '')
+    if (treas != '') {
       await doTransactions(
           choicetreasurer, Constant.TREASURER, choicetreasurerProvider);
+    }
     final treasass = ref!.read(choiceAssTreasurerProvider);
-    if (treasass != '')
+    if (treasass != '') {
       await doTransactions(choiceAssTreasurer, Constant.ASSISTANTTREASURER,
           choiceAssTreasurerProvider);
+    }
     final pro1 = ref!.read(choicePro1Provider);
-    if (pro1 != '')
+    if (pro1 != '') {
       await doTransactions(choicePro1, Constant.PROI, choicePro1Provider);
+    }
     final pro2 = ref!.read(choicePro2Provider);
-    if (pro2 != '')
+    if (pro2 != '') {
       await doTransactions(choicePro2, Constant.PROII, choicePro2Provider);
+    }
     final aud1 = ref!.read(choiceAuditor1Provider);
-    if (aud1 != '')
+    if (aud1 != '') {
       await doTransactions(
           choiceAuditor1, Constant.AUDITORI, choiceAuditor1Provider);
+    }
     final aud2 = ref!.read(choiceAuditor2Provider);
-    if (aud2 != '')
+    if (aud2 != '') {
       await doTransactions(
           choiceAuditor2, Constant.AUDITORII, choiceAuditor2Provider);
+    }
     final welfdirect = ref!.read(choiceWelfareDirector1Provider);
-    if (welfdirect != '')
+    if (welfdirect != '') {
       await doTransactions(choiceWelfareDirector1, Constant.WELFAREDIRECTORI,
           choiceWelfareDirector1Provider);
+    }
     final welfdirect2 = ref!.read(choiceWelfareDirector2Provider);
-    if (welfdirect2 != '')
+    if (welfdirect2 != '') {
       await doTransactions(choiceWelfareDirector2, Constant.WELFAREDIRECTORII,
           choiceWelfareDirector2Provider);
+    }
     final organisecre = ref!.read(choiceOrganisingSecreProvider);
-    if (organisecre != '')
+    if (organisecre != '') {
       await doTransactions(choiceOrganisingSecre, Constant.ORGANISINGSECRETARY,
           choiceOrganisingSecreProvider);
+    }
     final organisecreass = ref!.read(choiceAssOrganisingSecreProvider);
-    if (organisecreass != '')
+    if (organisecreass != '') {
       await doTransactions(choiceAssOrganisingSecre,
           Constant.ASSORGANISINGSECRETARY, choiceAssOrganisingSecreProvider);
+    }
     final legaladviser = ref!.read(choicelegalAdviserProvider);
     if (legaladviser != '') {
       final value = ref!.read(choicelegalAdviserProvider);
@@ -463,25 +482,23 @@ class MainScreen extends HookConsumerWidget {
         .set({'vote': 'yes'}, SetOptions(merge: true)).whenComplete(() {
       prefs!.setBool('vote' + prefs!.getString('ids')!, true);
       p.Loader.hide();
-          showDialog(
-                            context: _context!,
-                            builder: (ctx) => AlertDialog(
-                                  title: const Text('Vote'),
-                                  content: const Text(
-                                      'Voting Successful'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                          Navigator.of(_context!).pushReplacement(
-        MaterialPageRoute(builder: (_) => LoginScreen()),
-      );
-                                        },
-                                        child: const Text('Ok'))
-                                  ],
-                                )).then((value) => null);
- 
-      
+      showDialog(
+          context: _context!,
+          builder: (ctx) => AlertDialog(
+                title: const Text('Vote'),
+                content: const Text('Voting Successful'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        Navigator.of(_context!).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (_) => const LoginScreen()),
+                        );
+                      },
+                      child: const Text('Ok'))
+                ],
+              )).then((value) => null);
     });
   }
 
