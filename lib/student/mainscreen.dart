@@ -490,6 +490,26 @@ class MainScreen extends HookConsumerWidget {
                 actions: [
                   TextButton(
                       onPressed: () {
+                        ref!.read(choicepresidentProvider.notifier).state = '';
+                        ref!.read(choicevPresidentProvider.notifier).state = '';
+                        ref!.read(choiceVP2Provider.notifier).state = '';
+                        ref!.read(choiceSecretarygeneralProvider.notifier).state = '';
+                        ref!.read(choiceAssSecregeneralProvider.notifier).state = '';
+                        ref!.read(choiceFinancialSreProvider.notifier).state = '';
+                        ref!.read(choiceAssfinancialSreProvider.notifier).state = '';
+                        ref!.read(choicetreasurerProvider.notifier).state = '';
+                        ref!.read(choiceAssTreasurerProvider.notifier).state = '';
+                        ref!.read(choicePro1Provider.notifier).state = '';
+                        ref!.read(choicePro2Provider.notifier).state = '';
+                        ref!.read(choiceAuditor1Provider.notifier).state = '';
+                        ref!.read(choiceAuditor2Provider.notifier).state = '';
+                        ref!.read(choiceWelfareDirector1Provider.notifier).state = '';
+                        ref!.read(choiceWelfareDirector2Provider.notifier).state = '';
+                        ref!.read(choiceOrganisingSecreProvider.notifier).state = '';
+                        ref!.read(choiceAssOrganisingSecreProvider.notifier).state = '';
+                        ref!.read(choicelegalAdviserProvider.notifier).state = '';
+                        ref!.read(choicevPresidentProvider.notifier).state = '';
+
                         Navigator.of(ctx).pop();
                         Navigator.of(_context!).pushReplacement(
                           MaterialPageRoute(
